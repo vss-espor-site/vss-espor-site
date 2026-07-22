@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id            String                  @id @default(cuid())
+  firstName     String
+  lastName      String
+  age           Int
+  ageGroup      String
+  pubgId        String                  @unique
+  community     String // "instagram" | "tiktok" | "both"
+  socialHandle  String?
+  bio           String?
+  avatarUrl     String?
+  createdAt     DateTime                @default(now())
+  participants  TournamentParticipant[]
+
+  @@index([ageGroup])
+}
+
+model Tournament {
+  id              String                  @id @default(cuid())
+  title           String
+  description     String
+  startDate       DateTime
+  status          String                  @default("upcoming") // upcoming | active | completed
+  maxParticipants Int?
+  createdAt       DateTime                @default(now())
+  participants    TournamentParticipant[]
+}
+
+model TournamentParticipant {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  playerId     String
+  player       Player     @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  joinedAt     DateTime   @default(now())
+
+  @@unique([tournamentId, playerId])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
