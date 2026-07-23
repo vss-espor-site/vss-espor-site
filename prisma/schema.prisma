@@ -53,3 +53,14 @@ model Announcement {
   pinned    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model QuizScore {
+  id        String   @id @default(cuid())
+  pubgId    String
+  firstName String
+  lastName  String
+  score     Int
+  createdAt DateTime @default(now())
+
+  @@index([score])
+}

@@ -4,6 +4,8 @@ const links = [
   { href: "/", label: "Ana Sayfa" },
   { href: "/players", label: "Oyuncular" },
   { href: "/tournaments", label: "Turnuvalar" },
+  { href: "/harita", label: "Haritalar" },
+  { href: "/soru-cevap", label: "Soru Cevap" },
   { href: "/announcements", label: "Duyurular" },
   { href: "/register", label: "Kayit Ol" },
 ];
