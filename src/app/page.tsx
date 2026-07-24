@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const DISCORD_INVITE = "https://discord.gg/rSMqjUGeza";
+
 function currentMonthKey() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -23,7 +25,6 @@ export default async function HomePage() {
     <div className="space-y-20">
       {/* HERO */}
       <section className="relative overflow-hidden border border-bg-border bg-bg-card bg-grid px-6 py-24 text-center">
-        {/* Radar dekoru */}
         <div className="pointer-events-none absolute right-[-120px] top-1/2 hidden h-[420px] w-[420px] -translate-y-1/2 md:block">
           <div className="absolute inset-0 rounded-full border border-neon-green/20" />
           <div className="absolute inset-[60px] rounded-full border border-neon-green/15" />
@@ -52,6 +53,14 @@ export default async function HomePage() {
           >
             Hemen Kayıt Ol
           </Link>
+          <a
+            href={DISCORD_INVITE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm border border-[#5865F2] px-7 py-3 font-hud text-sm font-bold uppercase tracking-wider text-[#5865F2] transition hover:scale-105 hover:bg-[#5865F2] hover:text-white"
+          >
+            💬 Discord'a Katıl
+          </a>
           <Link
             href="/tournaments"
             className="rounded-sm border border-neon-yellow px-7 py-3 font-hud text-sm font-bold uppercase tracking-wider gold-text shadow-neonYellow transition hover:scale-105"
@@ -82,7 +91,7 @@ export default async function HomePage() {
       <section className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <StatCard label="Kayıtlı Oyuncu" value={playerCount} />
         <StatCard label="Aktif / Yaklaşan Turnuva" value={activeTournaments.length} />
-        <StatCard label="Topluluk" value="Instagram + TikTok" />
+        <StatCard label="Topluluk" value="Discord + Instagram" />
       </section>
 
       {/* LATEST ANNOUNCEMENT */}
@@ -124,6 +133,14 @@ export default async function HomePage() {
           Topluluğun <span className="neon-text">Nabzını</span> Tut
         </h3>
         <div className="flex flex-wrap justify-center gap-4">
+          <a
+            href={DISCORD_INVITE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm border border-[#5865F2] px-6 py-3 font-hud text-sm font-bold uppercase tracking-wider text-[#5865F2] transition hover:scale-105 hover:bg-[#5865F2] hover:text-white"
+          >
+            💬 Discord
+          </a>
           <a
             href="https://instagram.com/DEGISTIR_INSTAGRAM_KULLANICI_ADI"
             target="_blank"
