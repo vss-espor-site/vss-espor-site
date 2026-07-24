@@ -77,3 +77,15 @@ model KillRecord {
 
   @@index([mapName, month])
 }
+
+model MatchResult {
+  id           String   @id @default(cuid())
+  tournamentId String
+  teamName     String
+  placement    Int
+  killCount    Int
+  screenshot   String
+  createdAt    DateTime @default(now())
+
+  @@index([tournamentId])
+}
