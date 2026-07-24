@@ -64,3 +64,16 @@ model QuizScore {
 
   @@index([score])
 }
+
+model KillRecord {
+  id        String   @id @default(cuid())
+  mapName   String
+  pubgId    String
+  instagram String
+  killCount Int
+  screenshot String
+  month     String
+  createdAt DateTime @default(now())
+
+  @@index([mapName, month])
+}

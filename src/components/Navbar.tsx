@@ -6,6 +6,7 @@ const links = [
   { href: "/tournaments", label: "Turnuvalar" },
   { href: "/harita", label: "Haritalar" },
   { href: "/soru-cevap", label: "Soru Cevap" },
+  { href: "/enler", label: "Enler" },
   { href: "/announcements", label: "Duyurular" },
   { href: "/register", label: "Kayit Ol" },
 ];
