@@ -2,15 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
   color-scheme: dark;
 }
 
 body {
-  background-color: #0a0a0a;
-  color: #e5e5e5;
+  background-color: #0a0d10;
+  color: #e5e9ec;
   font-family: "Inter", sans-serif;
 }
 
@@ -19,19 +19,28 @@ h1, h2, h3, h4, .font-display {
   letter-spacing: 0.02em;
 }
 
+.font-hud {
+  font-family: "Space Mono", monospace;
+}
+
 ::selection {
-  background: #39ff14;
-  color: #0a0a0a;
+  background: #2e9bff;
+  color: #0a0d10;
 }
 
 .neon-text {
-  color: #39ff14;
-  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+  color: #2e9bff;
+  text-shadow: 0 0 8px rgba(46, 155, 255, 0.6);
+}
+
+.gold-text {
+  color: #e8b93d;
+  text-shadow: 0 0 8px rgba(232, 185, 61, 0.5);
 }
 
 .neon-border {
-  border: 1px solid #39ff14;
-  box-shadow: 0 0 10px rgba(57, 255, 20, 0.35), inset 0 0 10px rgba(57, 255, 20, 0.05);
+  border: 1px solid #2e9bff;
+  box-shadow: 0 0 10px rgba(46, 155, 255, 0.35), inset 0 0 10px rgba(46, 155, 255, 0.05);
 }
 
 .bg-scanlines {
@@ -44,13 +53,54 @@ h1, h2, h3, h4, .font-display {
   );
 }
 
+/* Taktik panel: kesik koseli HUD kutusu */
+.hud-panel {
+  position: relative;
+  background: #141a20;
+  border: 1px solid #232b33;
+}
+.hud-panel::before,
+.hud-panel::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #2e9bff;
+  pointer-events: none;
+}
+.hud-panel::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+.hud-panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+.hud-panel-gold::before,
+.hud-panel-gold::after {
+  border-color: #e8b93d;
+}
+
+.hud-label {
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #6b7684;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #0a0d10;
 }
 ::-webkit-scrollbar-thumb {
-  background: #22c40d;
+  background: #1c79d1;
   border-radius: 4px;
 }

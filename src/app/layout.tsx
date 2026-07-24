@@ -6,7 +6,7 @@ import ChatWidget from "@/components/ChatWidget";
 import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "PUBG Mobile e-Spor Toplulugu",
+  title: "VSS E-Sports",
   description: "Resmi PUBG Mobile e-spor takim ve toplulugu web sitesi.",
 };
 

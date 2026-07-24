@@ -7,7 +7,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Selam! Turnuvalar, kayit sureci ya da toplulukla ilgili her seyi sorabilirsin." },
+    { role: "assistant", content: "Selam! Ben VSS Amca. Turnuvalar, kayit sureci ya da toplulukla ilgili her seyi sorabilirsin." },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ export default function ChatWidget() {
       {open && (
         <div className="mb-3 flex h-[28rem] w-80 flex-col overflow-hidden rounded-lg border border-bg-border bg-bg-card shadow-neon">
           <div className="flex items-center justify-between border-b border-bg-border bg-bg-soft px-4 py-3">
-            <span className="font-display font-bold text-neon-green">AI Asistan</span>
+            <span className="font-display font-bold text-neon-green">VSS AMCA</span>
             <button
               onClick={() => setOpen(false)}
               className="text-neutral-400 hover:text-neon-yellow"
@@ -96,10 +96,10 @@ export default function ChatWidget() {
       )}
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-neon-green text-2xl shadow-neon transition hover:scale-105"
-        aria-label="Sohbeti ac"
+        className="flex items-center gap-2 rounded-full bg-neon-green px-5 py-4 font-hud text-xs font-bold uppercase tracking-wider text-black shadow-neon transition hover:scale-105"
+        aria-label="VSS Amcaya Sor"
       >
-        💬
+        💬 VSS AMCAYA SOR
       </button>
     </div>
   );
