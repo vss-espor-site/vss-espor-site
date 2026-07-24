@@ -8,6 +8,7 @@ import Providers from "@/components/Providers";
 export const metadata: Metadata = {
   title: "VSS E-Sports",
   description: "Resmi PUBG Mobile e-spor takim ve toplulugu web sitesi.",
+  verification: { google: "bTcEI0dUfD0sq9DdASTqtzS8394SLHCyqXrLsnOHZHA" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
