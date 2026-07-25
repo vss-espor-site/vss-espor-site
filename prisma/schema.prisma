@@ -89,3 +89,14 @@ model MatchResult {
 
   @@index([tournamentId])
 }
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  ageGroup    String
+  pubgId      String
+  displayName String
+  content     String
+  createdAt   DateTime @default(now())
+
+  @@index([ageGroup, createdAt])
+}

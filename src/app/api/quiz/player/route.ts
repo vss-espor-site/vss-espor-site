@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   }
   const player = await prisma.player.findUnique({
     where: { pubgId },
-    select: { firstName: true, lastName: true, pubgId: true },
+    select: { firstName: true, lastName: true, pubgId: true, ageGroup: true },
   });
   if (!player) {
     return NextResponse.json({ error: "Oyuncu bulunamadi" }, { status: 404 });
