@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const res = await signIn("credentials", {
+    const res = await signIn("admin-credentials", {
       email,
       password,
       redirect: false,

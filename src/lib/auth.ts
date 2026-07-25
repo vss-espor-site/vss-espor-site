@@ -1,9 +1,15 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
 
-// Tek admin hesabi: sadece .env'deki ADMIN_EMAIL + ADMIN_PASSWORD_HASH ile
-// eslesen kisi giris yapabilir. Baska hicbir hesap/kayit yolu yoktur.
+const prisma = new PrismaClient();
+
+// Uc giris yontemi var:
+// 1) Admin: sadece .env'deki ADMIN_EMAIL + ADMIN_PASSWORD_HASH ile eslesen kisi.
+// 2) Google: kayitli oyuncularin Gmail ile giris yapip kendi profiline baglanmasi.
+// 3) Oyuncu e-posta+sifre: kendi e-postasi ile kayit olup dogrulayan oyuncular.
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   pages: {
@@ -11,6 +17,7 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
+      id: "admin-credentials",
       name: "Admin Girisi",
       credentials: {
         email: { label: "E-posta", type: "email" },
@@ -33,10 +40,43 @@ export const authOptions: NextAuthOptions = {
         return { id: "admin", email: adminEmail, name: "Admin" };
       },
     }),
+    CredentialsProvider({
+      id: "player-credentials",
+      name: "Oyuncu Girisi",
+      credentials: {
+        email: { label: "E-posta", type: "email" },
+        password: { label: "Sifre", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const player = await prisma.player.findUnique({
+          where: { email: credentials.email.toLowerCase().trim() },
+        });
+        if (!player || !player.passwordHash) return null;
+        if (!player.emailVerified) {
+          throw new Error("EMAIL_NOT_VERIFIED");
+        }
+
+        const valid = await bcrypt.compare(credentials.password, player.passwordHash);
+        if (!valid) return null;
+
+        return { id: player.id, email: player.email!, name: `${player.firstName} ${player.lastName}` };
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = "admin";
+    async jwt({ token, user, account }) {
+      if (user && account?.provider === "admin-credentials") {
+        token.role = "admin";
+      }
+      if (user && (account?.provider === "player-credentials" || account?.provider === "google")) {
+        token.role = "player";
+      }
       return token;
     },
     async session({ session, token }) {

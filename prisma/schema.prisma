@@ -14,6 +14,11 @@ model Player {
   age           Int
   ageGroup      String
   pubgId        String                  @unique
+  email         String?                 @unique
+  passwordHash  String?
+  emailVerified Boolean                 @default(false)
+  verifyToken   String?                 @unique
+  verifyExpires DateTime?
   community     String // "instagram" | "tiktok" | "both"
   socialHandle  String?
   bio           String?
