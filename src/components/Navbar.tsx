@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { href: "/", label: "Ana Sayfa" },
@@ -16,9 +17,11 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-bg-border bg-bg/95 backdrop-blur">
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-neon-green to-transparent opacity-60" />
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="flex items-center gap-2 font-display text-xl font-bold tracking-widest">
-          <span className="neon-text">VSS</span>
-          <span className="gold-text">E-Sports</span>
+        <Link href="/" className="flex items-center gap-3 font-display text-xl font-bold tracking-widest">
+          <Image src="/logo.png" alt="VSS E-Sports" width={40} height={40} priority />
+          <span>
+            <span className="neon-text">VSS</span> <span className="gold-text">E-Sports</span>
+          </span>
         </Link>
         <ul className="hidden gap-6 font-hud text-[11px] uppercase tracking-[0.15em] text-neutral-400 md:flex">
           {links.map((l) => (
