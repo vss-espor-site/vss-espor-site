@@ -53,14 +53,6 @@ export default async function HomePage() {
           >
             Hemen Kayıt Ol
           </Link>
-          <a
-            href={DISCORD_INVITE}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-sm border border-[#5865F2] px-7 py-3 font-hud text-sm font-bold uppercase tracking-wider text-[#5865F2] transition hover:scale-105 hover:bg-[#5865F2] hover:text-white"
-          >
-            💬 Discord'a Katıl
-          </a>
           <Link
             href="/tournaments"
             className="rounded-sm border border-neon-yellow px-7 py-3 font-hud text-sm font-bold uppercase tracking-wider gold-text shadow-neonYellow transition hover:scale-105"
@@ -142,20 +134,12 @@ export default async function HomePage() {
             💬 Discord
           </a>
           <a
-            href="https://instagram.com/DEGISTIR_INSTAGRAM_KULLANICI_ADI"
+            href="https://www.instagram.com/vssespor"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-sm border border-neon-yellow px-6 py-3 font-hud text-sm font-bold uppercase tracking-wider gold-text transition hover:scale-105"
           >
             📸 Instagram
-          </a>
-          <a
-            href="https://tiktok.com/@DEGISTIR_TIKTOK_KULLANICI_ADI"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-sm border border-neon-green px-6 py-3 font-hud text-sm font-bold uppercase tracking-wider text-neon-green transition hover:scale-105"
-          >
-            🎵 TikTok
           </a>
         </div>
       </section>

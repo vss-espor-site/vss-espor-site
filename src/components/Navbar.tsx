@@ -11,8 +11,6 @@ const links = [
   { href: "/register", label: "Kayıt Ol" },
 ];
 
-const DISCORD_INVITE = "https://discord.gg/rSMqjUGeza";
-
 export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-bg-border bg-bg/95 backdrop-blur">
@@ -31,14 +29,6 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <a
-          href={DISCORD_INVITE}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden items-center gap-2 rounded-sm border border-[#5865F2] px-4 py-2 font-hud text-xs font-bold uppercase tracking-wider text-[#5865F2] transition hover:scale-105 hover:bg-[#5865F2] hover:text-white md:flex"
-        >
-          💬 Discord
-        </a>
         <Link
           href="/register"
           className="rounded-sm bg-neon-green px-4 py-2 font-hud text-xs font-bold uppercase tracking-wider text-black shadow-neon transition hover:scale-105 md:hidden"
@@ -53,9 +43,6 @@ export default function Navbar() {
             {l.label}
           </Link>
         ))}
-        <a href={DISCORD_INVITE} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-[#5865F2]">
-          Discord
-        </a>
       </div>
     </header>
   );
