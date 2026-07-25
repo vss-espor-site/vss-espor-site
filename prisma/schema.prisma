@@ -17,6 +17,7 @@ model Player {
   email         String?                 @unique
   passwordHash  String?
   emailVerified Boolean                 @default(false)
+  vssStatus     String                  @default("none")
   verifyToken   String?                 @unique
   verifyExpires DateTime?
   community     String // "instagram" | "tiktok" | "both"
