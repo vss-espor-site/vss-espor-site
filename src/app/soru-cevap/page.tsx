@@ -37,11 +37,32 @@ export default function SoruCevapPage() {
   const [timeLeft, setTimeLeft] = useState(TIME_PER_QUESTION);
   const [selected, setSelected] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
+  const [restartMsg, setRestartMsg] = useState<string | null>(null);
 
   const [leaderboard, setLeaderboard] = useState<LeaderRow[]>([]);
   const [saving, setSaving] = useState(false);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const playerRef = useRef(player);
+  useEffect(() => {
+    playerRef.current = player;
+  }, [player]);
+
+  async function saveScore(finalScore: number) {
+    const p = playerRef.current;
+    if (!p || finalScore <= 0) return;
+    try {
+      await fetch("/api/quiz/score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pubgId: p.pubgId, score: finalScore }),
+      });
+      const lb = await fetch("/api/quiz/leaderboard").then((r) => r.json());
+      setLeaderboard(lb.top || []);
+    } catch {
+      // sessizce gec, kullanici deneyimini bozma
+    }
+  }
 
   function startQuiz() {
     const shuffled = shuffle(quizQuestions);
@@ -74,28 +95,24 @@ export default function SoruCevapPage() {
     }
   }
 
-  function restartFromBeginning() {
+  async function restartFromBeginning(reason: "timeout") {
+    const scoreAtReset = score;
+    if (reason === "timeout" && scoreAtReset > 0) {
+      setSaving(true);
+      await saveScore(scoreAtReset);
+      setSaving(false);
+      setRestartMsg(`Sure doldu! ${scoreAtReset} puanin kaydedildi, yeni turla devam ediyorsun.`);
+      setTimeout(() => setRestartMsg(null), 3000);
+    }
     startQuiz();
   }
 
   async function finishQuiz(finalScore: number) {
     setPhase("finished");
     if (timerRef.current) clearInterval(timerRef.current);
-    if (!player) return;
     setSaving(true);
-    try {
-      await fetch("/api/quiz/score", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pubgId: player.pubgId, score: finalScore }),
-      });
-      const lb = await fetch("/api/quiz/leaderboard").then((r) => r.json());
-      setLeaderboard(lb.top || []);
-    } catch {
-      // sessizce gec
-    } finally {
-      setSaving(false);
-    }
+    await saveScore(finalScore);
+    setSaving(false);
   }
 
   function goToNextQuestion(scoreSoFar: number) {
@@ -110,7 +127,7 @@ export default function SoruCevapPage() {
   }
 
   function handleAnswer(key: string) {
-    if (selected) return; // zaten cevaplandi
+    if (selected) return;
     setSelected(key);
     const current = order[currentIndex];
     const isCorrect = key === current.correct;
@@ -129,7 +146,7 @@ export default function SoruCevapPage() {
       setTimeLeft((t) => {
         if (t <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
-          restartFromBeginning();
+          restartFromBeginning("timeout");
           return TIME_PER_QUESTION;
         }
         return t - 1;
@@ -154,7 +171,7 @@ export default function SoruCevapPage() {
         <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 16 }}>PUBG Mobile Soru Cevap</h1>
         <p style={{ color: "#aaa", marginBottom: 20 }}>
           Yarismaya baslamak icin kayitli Oyuncu ID'ni gir. Her dogru cevap {POINTS_PER_CORRECT} puan,
-          her soru icin {TIME_PER_QUESTION} saniyen var. Sure biterse basa donersin.
+          her soru icin {TIME_PER_QUESTION} saniyen var. Sure biterse o ana kadarki puanin kaydedilir ve yeni tur baslar.
         </p>
         <input
           value={pubgIdInput}
@@ -219,6 +236,11 @@ export default function SoruCevapPage() {
             }}
           />
         </div>
+        {restartMsg && (
+          <p style={{ background: "#1a2e1a", color: "#4ade80", padding: "8px 12px", borderRadius: 8, marginBottom: 16, fontSize: 14 }}>
+            {restartMsg}
+          </p>
+        )}
         <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 20 }}>{current.question}</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {current.options.map((opt) => {

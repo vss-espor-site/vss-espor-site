@@ -9,7 +9,7 @@
 }
 
 body {
-  background-color: #0a0d10;
+  background-color: #05070a;
   color: #e5e9ec;
   font-family: "Inter", sans-serif;
 }
@@ -24,23 +24,23 @@ h1, h2, h3, h4, .font-display {
 }
 
 ::selection {
-  background: #2e9bff;
-  color: #0a0d10;
+  background: #29d3ff;
+  color: #05070a;
 }
 
 .neon-text {
-  color: #2e9bff;
-  text-shadow: 0 0 8px rgba(46, 155, 255, 0.6);
+  color: #29d3ff;
+  text-shadow: 0 0 10px rgba(41, 211, 255, 0.65);
 }
 
 .gold-text {
-  color: #e8b93d;
-  text-shadow: 0 0 8px rgba(232, 185, 61, 0.5);
+  color: #d4af37;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
 .neon-border {
-  border: 1px solid #2e9bff;
-  box-shadow: 0 0 10px rgba(46, 155, 255, 0.35), inset 0 0 10px rgba(46, 155, 255, 0.05);
+  border: 1px solid #29d3ff;
+  box-shadow: 0 0 12px rgba(41, 211, 255, 0.4), inset 0 0 12px rgba(41, 211, 255, 0.06);
 }
 
 .bg-scanlines {
@@ -53,37 +53,18 @@ h1, h2, h3, h4, .font-display {
   );
 }
 
-/* Taktik panel: kesik koseli HUD kutusu */
+/* Cam gibi, yumusak koseli, neon parlak cerceveli panel (yeni gorsel temasi) */
 .hud-panel {
   position: relative;
-  background: #141a20;
-  border: 1px solid #232b33;
-}
-.hud-panel::before,
-.hud-panel::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: #2e9bff;
-  pointer-events: none;
-}
-.hud-panel::before {
-  top: -1px;
-  left: -1px;
-  border-top: 2px solid;
-  border-left: 2px solid;
-}
-.hud-panel::after {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 2px solid;
-  border-right: 2px solid;
+  background: linear-gradient(180deg, rgba(20,26,34,0.9), rgba(10,13,18,0.95));
+  border: 1px solid rgba(41, 211, 255, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 0 18px rgba(41, 211, 255, 0.12), inset 0 0 24px rgba(41, 211, 255, 0.04);
 }
 
-.hud-panel-gold::before,
-.hud-panel-gold::after {
-  border-color: #e8b93d;
+.hud-panel-gold {
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.15), inset 0 0 24px rgba(212, 175, 55, 0.05);
 }
 
 .hud-label {
@@ -94,13 +75,27 @@ h1, h2, h3, h4, .font-display {
   color: #6b7684;
 }
 
+/* Vitrin gorseli icin parlak cerceve */
+.showcase-frame {
+  position: relative;
+  border-radius: 20px;
+  padding: 4px;
+  background: linear-gradient(135deg, rgba(41,211,255,0.7), rgba(212,175,55,0.5), rgba(41,211,255,0.7));
+  box-shadow: 0 0 40px rgba(41,211,255,0.25), 0 0 80px rgba(212,175,55,0.08);
+}
+.showcase-frame > div {
+  border-radius: 17px;
+  overflow: hidden;
+  background: #05070a;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0d10;
+  background: #05070a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c79d1;
+  background: #0ea5ce;
   border-radius: 4px;
 }

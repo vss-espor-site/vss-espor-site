@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -24,17 +25,7 @@ export default async function HomePage() {
   return (
     <div className="space-y-20">
       {/* HERO */}
-      <section className="relative overflow-hidden border border-bg-border bg-bg-card bg-grid px-6 py-24 text-center">
-        <div className="pointer-events-none absolute right-[-120px] top-1/2 hidden h-[420px] w-[420px] -translate-y-1/2 md:block">
-          <div className="absolute inset-0 rounded-full border border-neon-green/20" />
-          <div className="absolute inset-[60px] rounded-full border border-neon-green/15" />
-          <div className="absolute inset-[130px] rounded-full border border-neon-green/10" />
-          <div className="absolute inset-0 animate-radarSpin">
-            <div className="absolute left-1/2 top-1/2 h-[210px] w-[1px] origin-top bg-gradient-to-b from-neon-green/70 to-transparent" />
-          </div>
-          <div className="absolute inset-0 animate-pulseRing rounded-full border border-neon-green/40" />
-        </div>
-
+      <section className="relative overflow-hidden px-6 py-16 text-center">
         <p className="mb-4 font-hud text-[11px] uppercase tracking-[0.35em] text-neon-orange">
           Bölge daralıyor // saha aktif
         </p>
@@ -42,10 +33,25 @@ export default async function HomePage() {
           <span className="neon-text">VSS</span>{" "}
           <span className="gold-text">E-SPORTS</span> TOPLULUĞU
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-neutral-400">
+        <p className="mx-auto mt-5 max-w-2xl text-neutral-400">
           Turnuvalara katıl, topluluğumuza üye ol, oyuncu profilini oluştur ve
           rekabetin tam ortasında yerini al.
         </p>
+
+        {/* VITRIN GORSELI */}
+        <div className="showcase-frame mx-auto mt-10 max-w-4xl">
+          <div>
+            <Image
+              src="/hero-showcase.jpg"
+              alt="VSS E-Sports"
+              width={1510}
+              height={1042}
+              className="h-auto w-full"
+              priority
+            />
+          </div>
+        </div>
+
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <Link
             href="/register"

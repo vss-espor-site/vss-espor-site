@@ -10,21 +10,21 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#0A0D10",
-          soft: "#10151A",
-          card: "#141A20",
-          border: "#232B33",
+          DEFAULT: "#05070A",
+          soft: "#0B0F14",
+          card: "#0E1319",
+          border: "#1C2530",
         },
         neon: {
-          green: "#2E9BFF",
-          greenDark: "#1C79D1",
-          yellow: "#E8B93D",
+          green: "#29D3FF",
+          greenDark: "#0EA5CE",
+          yellow: "#D4AF37",
           orange: "#FF5A2E",
         },
       },
       boxShadow: {
-        neon: "0 0 10px rgba(46,155,255,0.5), 0 0 30px rgba(46,155,255,0.15)",
-        neonYellow: "0 0 10px rgba(232,185,61,0.5), 0 0 30px rgba(232,185,61,0.15)",
+        neon: "0 0 12px rgba(41,211,255,0.55), 0 0 40px rgba(41,211,255,0.18)",
+        neonYellow: "0 0 12px rgba(212,175,55,0.55), 0 0 40px rgba(212,175,55,0.18)",
         neonOrange: "0 0 10px rgba(255,90,46,0.5), 0 0 30px rgba(255,90,46,0.15)",
       },
       fontFamily: {
@@ -32,8 +32,7 @@ const config: Config = {
         mono: ["Space Mono", "monospace"],
       },
       backgroundImage: {
-        grid: "linear-gradient(rgba(46,155,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(46,155,255,0.06) 1px, transparent 1px)",
-        contour: "radial-gradient(circle at 50% 50%, transparent 0%, transparent 60%, rgba(46,155,255,0.04) 61%, transparent 62%)",
+        grid: "linear-gradient(rgba(41,211,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(41,211,255,0.05) 1px, transparent 1px)",
       },
       backgroundSize: {
         grid: "40px 40px",
@@ -47,10 +46,15 @@ const config: Config = {
           "0%": { transform: "scale(0.9)", opacity: "0.6" },
           "100%": { transform: "scale(1.6)", opacity: "0" },
         },
+        glowPulse: {
+          "0%, 100%": { opacity: "0.7" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         radarSpin: "radarSpin 6s linear infinite",
         pulseRing: "pulseRing 3s ease-out infinite",
+        glowPulse: "glowPulse 3s ease-in-out infinite",
       },
     },
   },
