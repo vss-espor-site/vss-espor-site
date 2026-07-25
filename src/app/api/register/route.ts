@@ -10,6 +10,7 @@ const schema = z.object({
   pubgId: z.string().min(3, "PUBG ID en az 3 karakter olmali").max(30),
   community: z.enum(["instagram", "tiktok", "both", "none"]),
   socialHandle: z.string().max(50).optional().or(z.literal("")),
+  email: z.string().email("Gecerli bir e-posta gerekli"),
 });
 
 export async function POST(req: NextRequest) {
@@ -27,25 +28,53 @@ export async function POST(req: NextRequest) {
     const data = parsed.data;
     const ageGroup = computeAgeGroup(data.age);
 
-    const existing = await prisma.player.findUnique({ where: { pubgId: data.pubgId } });
-    if (existing) {
+    const existingEmail = await prisma.player.findUnique({ where: { email: data.email } });
+    if (existingEmail) {
       return NextResponse.json(
-        { error: "Bu PUBG ID ile zaten bir kayit mevcut." },
+        { error: "Bu Google hesabiyla zaten bir kayit mevcut." },
         { status: 409 }
       );
     }
 
-    const player = await prisma.player.create({
-      data: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        age: data.age,
-        ageGroup,
-        pubgId: data.pubgId,
-        community: data.community,
-        socialHandle: data.socialHandle || null,
-      },
-    });
+    const existingPubgId = await prisma.player.findUnique({ where: { pubgId: data.pubgId } });
+
+    let player;
+
+    if (existingPubgId) {
+      if (existingPubgId.email) {
+        return NextResponse.json(
+          { error: "Bu PUBG ID zaten bir hesaba bagli. Eger bu senin ID'inse bizimle iletisime gec." },
+          { status: 409 }
+        );
+      }
+      player = await prisma.player.update({
+        where: { id: existingPubgId.id },
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          age: data.age,
+          ageGroup,
+          community: data.community,
+          socialHandle: data.socialHandle || null,
+          email: data.email,
+          emailVerified: true, // Google zaten e-postayi dogrulamis demektir
+        },
+      });
+    } else {
+      player = await prisma.player.create({
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          age: data.age,
+          ageGroup,
+          pubgId: data.pubgId,
+          community: data.community,
+          socialHandle: data.socialHandle || null,
+          email: data.email,
+          emailVerified: true,
+        },
+      });
+    }
 
     return NextResponse.json({ success: true, player }, { status: 201 });
   } catch (err) {
