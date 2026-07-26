@@ -34,11 +34,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        console.log("DEBUG adminEmail:", JSON.stringify(adminEmail));
-        console.log("DEBUG credEmail:", JSON.stringify(credentials.email.toLowerCase().trim()));
-        console.log("DEBUG adminHash:", JSON.stringify(adminHash));
         const valid = await bcrypt.compare(credentials.password, adminHash);
-        console.log("DEBUG valid:", valid);
         if (!valid) return null;
 
         return { id: "admin", email: adminEmail, name: "Admin" };

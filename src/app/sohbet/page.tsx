@@ -38,6 +38,7 @@ export default function SohbetPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const prevMessageCountRef = useRef(0);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -84,7 +85,12 @@ export default function SohbetPage() {
   }, [player?.ageGroup, room, vssStatus]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Sadece gercekten yeni mesaj geldiyse en alta kay, her yenilemede degil
+    // (yoksa kullanici yukari kaydirsa bile surekli asagi itiliyordu)
+    if (messages.length > prevMessageCountRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevMessageCountRef.current = messages.length;
   }, [messages]);
 
   function startCooldown() {
