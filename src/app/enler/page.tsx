@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { upload } from "@vercel/blob/client";
+import { useSession, signIn } from "next-auth/react";
 
-type MapId = "erangel" | "miramar" | "sanhok";
+type MapId = "erangel" | "miramar" | "sanhok" | "rondo";
+type Section = MapId | "en-iyi-vurus";
 
 const MAPS: { id: MapId; label: string }[] = [
   { id: "erangel", label: "Erangel" },
   { id: "miramar", label: "Miramar" },
   { id: "sanhok", label: "Sanhok" },
+  { id: "rondo", label: "Rondo" },
 ];
 
 type LeaderRow = {
@@ -16,6 +20,15 @@ type LeaderRow = {
   instagram: string;
   killCount: number;
   screenshot: string;
+};
+
+type BestPlay = {
+  id: string;
+  pubgId: string;
+  displayName: string;
+  videoUrl: string;
+  caption: string | null;
+  createdAt: string;
 };
 
 const TR_MONTHS = [
@@ -66,7 +79,8 @@ async function resizeImage(file: File, maxWidth = 900, quality = 0.7): Promise<s
 }
 
 export default function EnlerPage() {
-  const [activeMap, setActiveMap] = useState<MapId>("erangel");
+  const { data: session } = useSession();
+  const [section, setSection] = useState<Section>("erangel");
   const months = lastMonths(12);
   const [selectedMonth, setSelectedMonth] = useState(months[0]);
 
@@ -81,7 +95,21 @@ export default function EnlerPage() {
   const [submitting, setSubmitting] = useState(false);
   const [formMsg, setFormMsg] = useState("");
 
+  // En Iyi Vurus (video) state
+  const [plays, setPlays] = useState<BestPlay[]>([]);
+  const [playsLoading, setPlaysLoading] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoMsg, setVideoMsg] = useState("");
+  const videoInputRef = useRef<HTMLInputElement>(null);
+
+  const isMap = section !== "en-iyi-vurus";
+  const activeMap = isMap ? (section as MapId) : "erangel";
+
   const fetchLeaderboard = useCallback(async () => {
+    if (!isMap) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/kills?map=${activeMap}&month=${selectedMonth}`);
@@ -91,11 +119,23 @@ export default function EnlerPage() {
     } finally {
       setLoading(false);
     }
-  }, [activeMap, selectedMonth]);
+  }, [activeMap, selectedMonth, isMap]);
+
+  const fetchPlays = useCallback(async () => {
+    setPlaysLoading(true);
+    try {
+      const res = await fetch("/api/best-plays");
+      const data = await res.json();
+      setPlays(data.plays || []);
+    } finally {
+      setPlaysLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchLeaderboard();
-  }, [fetchLeaderboard]);
+    if (isMap) fetchLeaderboard();
+    else fetchPlays();
+  }, [section, fetchLeaderboard, fetchPlays, isMap]);
 
   async function handleSubmit() {
     setFormMsg("");
@@ -120,7 +160,7 @@ export default function EnlerPage() {
           instagram: instagram.trim(),
           killCount: kc,
           screenshot,
-          month: months[0], // her zaman icinde bulunulan aya kaydedilir
+          month: months[0],
         }),
       });
       if (!res.ok) {
@@ -141,25 +181,72 @@ export default function EnlerPage() {
     }
   }
 
+  async function handleVideoUpload() {
+    setVideoMsg("");
+    if (!session) {
+      setVideoMsg("Video yuklemek icin once giris yapmalisin.");
+      return;
+    }
+    if (!videoFile) {
+      setVideoMsg("Lutfen bir video sec.");
+      return;
+    }
+    if (videoFile.size > 100 * 1024 * 1024) {
+      setVideoMsg("Video 100 MB'dan kucuk olmali.");
+      return;
+    }
+    setVideoUploading(true);
+    setVideoProgress(0);
+    try {
+      const newBlob = await upload(videoFile.name, videoFile, {
+        access: "public",
+        handleUploadUrl: "/api/best-plays/upload",
+        onUploadProgress: (p) => setVideoProgress(Math.round(p.percentage)),
+      });
+
+      const res = await fetch("/api/best-plays", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoUrl: newBlob.url, caption: caption.trim() || null }),
+      });
+
+      if (!res.ok) {
+        const d = await res.json();
+        setVideoMsg(d.error || "Kaydedilemedi");
+      } else {
+        setVideoMsg("Video basariyla yuklendi!");
+        setCaption("");
+        setVideoFile(null);
+        if (videoInputRef.current) videoInputRef.current.value = "";
+        fetchPlays();
+      }
+    } catch (e) {
+      setVideoMsg("Yukleme basarisiz oldu, tekrar dene.");
+    } finally {
+      setVideoUploading(false);
+      setVideoProgress(0);
+    }
+  }
+
   return (
     <div style={{ maxWidth: 720, margin: "40px auto", padding: "0 16px" }}>
       <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 8 }}>Enler</h1>
       <p style={{ color: "#aaa", marginBottom: 24 }}>
-        Her harita icin ayin en cok kill alan oyuncusu. Kendi rekorunu ekran goruntusuyle yukle!
+        Her harita icin ayin en cok kill alan oyuncusu, ve en iyi vurus anlari.
       </p>
 
-      {/* Harita sekmeleri */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+      {/* Sekmeler */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
         {MAPS.map((m) => (
           <button
             key={m.id}
-            onClick={() => setActiveMap(m.id)}
+            onClick={() => setSection(m.id)}
             style={{
               padding: "8px 18px",
               borderRadius: 6,
               border: "1px solid #444",
-              background: activeMap === m.id ? "#22c55e" : "#1a1a1a",
-              color: activeMap === m.id ? "#000" : "#fff",
+              background: section === m.id ? "#22c55e" : "#1a1a1a",
+              color: section === m.id ? "#000" : "#fff",
               fontWeight: 700,
               cursor: "pointer",
             }}
@@ -167,127 +254,251 @@ export default function EnlerPage() {
             {m.label}
           </button>
         ))}
-      </div>
-
-      {/* Ay secici */}
-      <div style={{ marginBottom: 24 }}>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
+        <button
+          onClick={() => setSection("en-iyi-vurus")}
           style={{
-            padding: "8px 12px",
+            padding: "8px 18px",
             borderRadius: 6,
-            border: "1px solid #444",
-            background: "#111",
-            color: "#fff",
+            border: "1px solid #eab308",
+            background: section === "en-iyi-vurus" ? "#eab308" : "#1a1a1a",
+            color: section === "en-iyi-vurus" ? "#000" : "#eab308",
+            fontWeight: 700,
+            cursor: "pointer",
           }}
         >
-          {months.map((m) => (
-            <option key={m} value={m}>
-              {monthLabel(m)}
-            </option>
-          ))}
-        </select>
+          🎬 En Iyi Vurus
+        </button>
       </div>
 
-      {/* Sampiyon */}
-      {loading ? (
-        <p style={{ color: "#888" }}>Yukleniyor...</p>
-      ) : champion ? (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "32px 16px",
-            borderRadius: 16,
-            border: "1px solid #22c55e",
-            background: "linear-gradient(180deg, rgba(34,197,94,0.12), rgba(0,0,0,0))",
-            marginBottom: 28,
-          }}
-        >
-          <div style={{ fontSize: 13, letterSpacing: 3, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>
-            {MAPS.find((m) => m.id === activeMap)?.label.toUpperCase()} - {monthLabel(selectedMonth).toUpperCase()} SAMPIYONU
+      {isMap ? (
+        <>
+          {/* Ay secici */}
+          <div style={{ marginBottom: 24 }}>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{
+                padding: "8px 12px",
+                borderRadius: 6,
+                border: "1px solid #444",
+                background: "#111",
+                color: "#fff",
+              }}
+            >
+              {months.map((m) => (
+                <option key={m} value={m}>
+                  {monthLabel(m)}
+                </option>
+              ))}
+            </select>
           </div>
-          <div style={{ fontSize: 34, fontWeight: 900, marginBottom: 6 }}>{champion.pubgId}</div>
-          <div style={{ fontSize: 20, color: "#eab308", fontWeight: 700, marginBottom: 14 }}>
-            @{champion.instagram}
-          </div>
-          <div style={{ fontSize: 16, color: "#ccc", marginBottom: 16 }}>{champion.killCount} Kill</div>
-          {champion.screenshot && (
-            <img
-              src={champion.screenshot}
-              alt="mac sonucu"
-              style={{ maxWidth: "100%", borderRadius: 10, border: "1px solid #333" }}
-            />
+
+          {/* Sampiyon */}
+          {loading ? (
+            <p style={{ color: "#888" }}>Yukleniyor...</p>
+          ) : champion ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "32px 16px",
+                borderRadius: 16,
+                border: "1px solid #22c55e",
+                background: "linear-gradient(180deg, rgba(34,197,94,0.12), rgba(0,0,0,0))",
+                marginBottom: 28,
+              }}
+            >
+              <div style={{ fontSize: 13, letterSpacing: 3, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>
+                {MAPS.find((m) => m.id === activeMap)?.label.toUpperCase()} - {monthLabel(selectedMonth).toUpperCase()} SAMPIYONU
+              </div>
+              <div style={{ fontSize: 34, fontWeight: 900, marginBottom: 6 }}>{champion.pubgId}</div>
+              <div style={{ fontSize: 20, color: "#eab308", fontWeight: 700, marginBottom: 14 }}>
+                @{champion.instagram}
+              </div>
+              <div style={{ fontSize: 16, color: "#ccc", marginBottom: 16 }}>{champion.killCount} Kill</div>
+              {champion.screenshot && (
+                <img
+                  src={champion.screenshot}
+                  alt="mac sonucu"
+                  style={{ maxWidth: "100%", borderRadius: 10, border: "1px solid #333" }}
+                />
+              )}
+            </div>
+          ) : (
+            <p style={{ color: "#888", marginBottom: 28 }}>Bu ay icin henuz kayit yok.</p>
           )}
-        </div>
+
+          {/* Ilk 3 tablosu */}
+          {top3.length > 0 && (
+            <div style={{ marginBottom: 32 }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 10, color: "#ccc" }}>Ilk 3</h3>
+              <ol style={{ paddingLeft: 20 }}>
+                {top3.map((row) => (
+                  <li key={row.id} style={{ marginBottom: 6, color: "#eee" }}>
+                    <strong>{row.pubgId}</strong> (@{row.instagram}) - {row.killCount} kill
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {/* Yukleme formu */}
+          <div style={{ borderTop: "1px solid #333", paddingTop: 24 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14 }}>
+              {MAPS.find((m) => m.id === activeMap)?.label} icin kill kaydi yukle ({monthLabel(months[0])})
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <input
+                value={pubgId}
+                onChange={(e) => setPubgId(e.target.value)}
+                placeholder="Oyuncu ID (pubgId)"
+                style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
+              />
+              <input
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
+                placeholder="Instagram kullanici adi (@ olmadan)"
+                style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
+              />
+              <input
+                value={killCount}
+                onChange={(e) => setKillCount(e.target.value)}
+                placeholder="Kill sayisi"
+                type="number"
+                style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                style={{ color: "#ccc" }}
+              />
+              {formMsg && <p style={{ color: formMsg.includes("basariyla") ? "#22c55e" : "#f87171" }}>{formMsg}</p>}
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: "#22c55e",
+                  color: "#000",
+                  fontWeight: 700,
+                  cursor: submitting ? "default" : "pointer",
+                  opacity: submitting ? 0.6 : 1,
+                }}
+              >
+                {submitting ? "Yukleniyor..." : "Kaydi Yukle"}
+              </button>
+            </div>
+          </div>
+        </>
       ) : (
-        <p style={{ color: "#888", marginBottom: 28 }}>Bu ay icin henuz kayit yok.</p>
-      )}
+        <>
+          {/* EN IYI VURUS - video galerisi */}
+          <div style={{ marginBottom: 28 }}>
+            {!session && (
+              <div
+                style={{
+                  padding: 16,
+                  borderRadius: 10,
+                  border: "1px solid #eab308",
+                  marginBottom: 20,
+                  textAlign: "center",
+                }}
+              >
+                <p style={{ color: "#eab308", marginBottom: 10 }}>Video yuklemek icin giris yapmalisin.</p>
+                <button
+                  onClick={() => signIn("google")}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    border: "none",
+                    background: "#fff",
+                    color: "#000",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  Google ile Giris Yap
+                </button>
+              </div>
+            )}
 
-      {/* Ilk 3 tablosu */}
-      {top3.length > 0 && (
-        <div style={{ marginBottom: 32 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 10, color: "#ccc" }}>Ilk 3</h3>
-          <ol style={{ paddingLeft: 20 }}>
-            {top3.map((row) => (
-              <li key={row.id} style={{ marginBottom: 6, color: "#eee" }}>
-                <strong>{row.pubgId}</strong> (@{row.instagram}) - {row.killCount} kill
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
+            {session && (
+              <div style={{ borderTop: "1px solid #333", borderBottom: "1px solid #333", padding: "20px 0", marginBottom: 24 }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14 }}>En Iyi Vurusunu Paylas</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <input
+                    ref={videoInputRef}
+                    type="file"
+                    accept="video/mp4,video/quicktime,video/webm,video/x-matroska"
+                    onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
+                    style={{ color: "#ccc" }}
+                  />
+                  <input
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    placeholder="Kisa bir aciklama (opsiyonel)"
+                    maxLength={200}
+                    style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
+                  />
+                  {videoUploading && (
+                    <div style={{ height: 6, borderRadius: 3, background: "#222", overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${videoProgress}%`, background: "#eab308", transition: "width 0.2s" }} />
+                    </div>
+                  )}
+                  {videoMsg && (
+                    <p style={{ color: videoMsg.includes("basariyla") ? "#22c55e" : "#f87171" }}>{videoMsg}</p>
+                  )}
+                  <button
+                    onClick={handleVideoUpload}
+                    disabled={videoUploading}
+                    style={{
+                      padding: "10px 16px",
+                      borderRadius: 8,
+                      border: "none",
+                      background: "#eab308",
+                      color: "#000",
+                      fontWeight: 700,
+                      cursor: videoUploading ? "default" : "pointer",
+                      opacity: videoUploading ? 0.6 : 1,
+                    }}
+                  >
+                    {videoUploading ? `Yukleniyor... %${videoProgress}` : "Videoyu Yukle"}
+                  </button>
+                </div>
+              </div>
+            )}
 
-      {/* Yukleme formu */}
-      <div style={{ borderTop: "1px solid #333", paddingTop: 24 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14 }}>
-          {MAPS.find((m) => m.id === activeMap)?.label} icin kill kaydi yukle ({monthLabel(months[0])})
-        </h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <input
-            value={pubgId}
-            onChange={(e) => setPubgId(e.target.value)}
-            placeholder="Oyuncu ID (pubgId)"
-            style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
-          />
-          <input
-            value={instagram}
-            onChange={(e) => setInstagram(e.target.value)}
-            placeholder="Instagram kullanici adi (@ olmadan)"
-            style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
-          />
-          <input
-            value={killCount}
-            onChange={(e) => setKillCount(e.target.value)}
-            placeholder="Kill sayisi"
-            type="number"
-            style={{ padding: "10px 14px", borderRadius: 8, border: "1px solid #444", background: "#111", color: "#fff" }}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            style={{ color: "#ccc" }}
-          />
-          {formMsg && <p style={{ color: formMsg.includes("basariyla") ? "#22c55e" : "#f87171" }}>{formMsg}</p>}
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            style={{
-              padding: "10px 16px",
-              borderRadius: 8,
-              border: "none",
-              background: "#22c55e",
-              color: "#000",
-              fontWeight: 700,
-              cursor: submitting ? "default" : "pointer",
-              opacity: submitting ? 0.6 : 1,
-            }}
-          >
-            {submitting ? "Yukleniyor..." : "Kaydi Yukle"}
-          </button>
-        </div>
-      </div>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 14, color: "#ccc" }}>
+              Topluluğun En Iyi Vurusları
+            </h3>
+            {playsLoading ? (
+              <p style={{ color: "#888" }}>Yukleniyor...</p>
+            ) : plays.length === 0 ? (
+              <p style={{ color: "#888" }}>Henuz video yok, ilk paylasan sen ol!</p>
+            ) : (
+              <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
+                {plays.map((p) => (
+                  <div key={p.id} style={{ borderRadius: 10, overflow: "hidden", border: "1px solid #333", background: "#111" }}>
+                    <video
+                      src={p.videoUrl}
+                      controls
+                      playsInline
+                      style={{ width: "100%", display: "block", background: "#000", maxHeight: 360 }}
+                    />
+                    <div style={{ padding: "10px 12px" }}>
+                      <p style={{ fontWeight: 700, marginBottom: 4 }}>{p.displayName}</p>
+                      <p style={{ fontSize: 12, color: "#888" }}>{p.pubgId}</p>
+                      {p.caption && <p style={{ fontSize: 13, color: "#ccc", marginTop: 6 }}>{p.caption}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

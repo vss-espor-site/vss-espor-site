@@ -106,3 +106,14 @@ model ChatMessage {
 
   @@index([ageGroup, createdAt])
 }
+
+model BestPlay {
+  id          String   @id @default(cuid())
+  pubgId      String
+  displayName String
+  videoUrl    String
+  caption     String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
