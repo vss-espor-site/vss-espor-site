@@ -14,6 +14,7 @@ const maps = [
   { id: "erangel", label: "Erangel", file: "/maps/erangel.jpg" },
   { id: "miramar", label: "Miramar", file: "/maps/miramar.jpg" },
   { id: "sanhok", label: "Sanhok", file: "/maps/sanhok.jpg" },
+  { id: "rondo", label: "Rondo", file: "/maps/rondo.jpg" },
 ];
 
 export default function GameMap() {
@@ -22,7 +23,7 @@ export default function GameMap() {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "12px", flexWrap: "wrap" }}>
         {maps.map((m) => (
           <button
             key={m.id}
