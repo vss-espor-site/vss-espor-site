@@ -36,9 +36,11 @@ export default function SohbetPage() {
   const [cooldownLeft, setCooldownLeft] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prevMessageCountRef = useRef(0);
+  const isNearBottomRef = useRef(true);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -85,13 +87,21 @@ export default function SohbetPage() {
   }, [player?.ageGroup, room, vssStatus]);
 
   useEffect(() => {
-    // Sadece gercekten yeni mesaj geldiyse en alta kay, her yenilemede degil
-    // (yoksa kullanici yukari kaydirsa bile surekli asagi itiliyordu)
-    if (messages.length > prevMessageCountRef.current) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Sadece gercekten yeni mesaj geldiyse VE kullanici zaten en alttaysa kay.
+    // Sayfayi degil, sadece sohbet kutusunun kendi icini kaydiriyoruz.
+    const container = scrollContainerRef.current;
+    if (messages.length > prevMessageCountRef.current && container && isNearBottomRef.current) {
+      container.scrollTop = container.scrollHeight;
     }
     prevMessageCountRef.current = messages.length;
   }, [messages]);
+
+  function handleScroll() {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    isNearBottomRef.current = distanceFromBottom < 80;
+  }
 
   function startCooldown() {
     setCooldownLeft(COOLDOWN_MS / 1000);
@@ -254,7 +264,7 @@ export default function SohbetPage() {
         </div>
       ) : (
         <div className={`hud-panel flex h-[440px] flex-col overflow-hidden p-0 ${room === "vss" ? "hud-panel-gold" : ""}`}>
-          <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
+          <div ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
             {messages.length === 0 && (
               <p className="mt-16 text-center text-sm text-neutral-600">Henüz mesaj yok, ilk yazan sen ol! 🎮</p>
             )}
