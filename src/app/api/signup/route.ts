@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { computeAgeGroup } from "@/lib/ageGroup";
-import { sendVerificationEmail } from "@/lib/sendVerificationEmail";
 
 const schema = z.object({
   firstName: z.string().min(2).max(50),
@@ -32,23 +30,18 @@ export async function POST(req: NextRequest) {
     }
 
     const passwordHash = await bcrypt.hash(data.password, 10);
-    const verifyToken = crypto.randomBytes(32).toString("hex");
-    const verifyExpires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 saat
 
     const existingPubgId = await prisma.player.findUnique({ where: { pubgId: data.pubgId } });
 
     let player;
 
     if (existingPubgId) {
-      // Bu ID daha once (eski sistemde) kayit edilmis ama henuz e-posta/sifresi yok.
-      // Eger zaten bir e-postasi varsa, bu ID gercekten baskasina ait demektir - engelle.
       if (existingPubgId.email) {
         return NextResponse.json(
-          { error: "Bu PUBG ID zaten bir hesaba bagli. Eger bu senin ID'inse, giris sayfasindan sifremi unuttum'u kullan ya da bizimle iletisime gec." },
+          { error: "Bu PUBG ID zaten bir hesaba bagli. Eger bu senin ID'inse bizimle iletisime gec." },
           { status: 409 }
         );
       }
-      // E-postasi yoksa, mevcut kaydi guncelleyip e-posta/sifre baglayalim (eski verileri korunur)
       player = await prisma.player.update({
         where: { id: existingPubgId.id },
         data: {
@@ -60,9 +53,7 @@ export async function POST(req: NextRequest) {
           socialHandle: data.socialHandle || null,
           email: data.email,
           passwordHash,
-          emailVerified: false,
-          verifyToken,
-          verifyExpires,
+          emailVerified: true,
         },
       });
     } else {
@@ -77,17 +68,9 @@ export async function POST(req: NextRequest) {
           socialHandle: data.socialHandle || null,
           email: data.email,
           passwordHash,
-          emailVerified: false,
-          verifyToken,
-          verifyExpires,
+          emailVerified: true,
         },
       });
-    }
-
-    try {
-      await sendVerificationEmail(data.email, data.firstName, verifyToken);
-    } catch (emailErr) {
-      console.error("Dogrulama e-postasi gonderilemedi:", emailErr);
     }
 
     return NextResponse.json({ success: true, player: { id: player.id } }, { status: 201 });

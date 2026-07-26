@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 // Uc giris yontemi var:
 // 1) Admin: sadece .env'deki ADMIN_EMAIL + ADMIN_PASSWORD_HASH ile eslesen kisi.
 // 2) Google: kayitli oyuncularin Gmail ile giris yapip kendi profiline baglanmasi.
-// 3) Oyuncu e-posta+sifre: kendi e-postasi ile kayit olup dogrulayan oyuncular.
+// 3) Oyuncu e-posta+sifre: kendi e-postasi ile kayit olan oyuncular (dogrulama su an kapali).
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   pages: {
@@ -54,9 +54,6 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email.toLowerCase().trim() },
         });
         if (!player || !player.passwordHash) return null;
-        if (!player.emailVerified) {
-          throw new Error("EMAIL_NOT_VERIFIED");
-        }
 
         const valid = await bcrypt.compare(credentials.password, player.passwordHash);
         if (!valid) return null;
