@@ -82,7 +82,7 @@ function LoginForm() {
             className="w-full rounded-sm border border-bg-border bg-bg-soft px-3 py-2 outline-none focus:border-neon-green"
           />
           {info && <p className="text-sm text-neon-green">{info}</p>}
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-neon-orange">{error}</p>}
           <button
             type="submit"
             disabled={loading}

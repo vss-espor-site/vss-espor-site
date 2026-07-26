@@ -191,7 +191,7 @@ export default function SohbetPage() {
     return (
       <div className="mx-auto max-w-md">
         <div className="hud-panel p-8 text-center">
-          <p className="mb-4 text-red-400">{playerError}</p>
+          <p className="mb-4 text-neon-orange">{playerError}</p>
           <a href="/register" className="inline-block rounded-sm bg-neon-green px-5 py-2 font-hud text-sm font-bold uppercase tracking-wider text-black">
             Kayıt Ol
           </a>
@@ -288,7 +288,7 @@ export default function SohbetPage() {
           </div>
 
           {sendError && (
-            <p className="border-t border-bg-border px-5 py-2 text-xs text-red-400">{sendError}</p>
+            <p className="border-t border-bg-border px-5 py-2 text-xs text-neon-orange">{sendError}</p>
           )}
 
           <div className="flex gap-2 border-t border-bg-border p-3">

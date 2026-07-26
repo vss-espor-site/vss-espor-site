@@ -227,7 +227,7 @@ function RegistrationForm({
         </>
       )}
 
-      {error && <p className="rounded-md bg-red-950 px-3 py-2 text-sm text-red-400">{error}</p>}
+      {error && <p className="rounded-md bg-neon-orange/10 px-3 py-2 text-sm text-neon-orange">{error}</p>}
 
       <button
         type="submit"

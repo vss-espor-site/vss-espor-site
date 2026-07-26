@@ -76,7 +76,7 @@ export default function AdminVssRequestsPage() {
                     <button
                       onClick={() => act(p.id, "reject")}
                       disabled={actingId === p.id}
-                      className="rounded-md border border-red-500 px-3 py-1.5 text-xs font-bold text-red-400 disabled:opacity-50"
+                      className="rounded-md border border-neon-orange px-3 py-1.5 text-xs font-bold text-neon-orange disabled:opacity-50"
                     >
                       Reddet
                     </button>
@@ -98,7 +98,7 @@ export default function AdminVssRequestsPage() {
                   <span>{p.firstName} {p.lastName} · {p.pubgId}</span>
                   <button
                     onClick={() => act(p.id, "reject")}
-                    className="text-xs text-red-400 underline"
+                    className="text-xs text-neon-orange underline"
                   >
                     Kaldir
                   </button>

@@ -121,7 +121,7 @@ export default async function TournamentsPage() {
                 <span className="hud-label text-neon-orange">
                   {statusLabel[t.status] ?? t.status}
                 </span>
-                <span className="text-xs text-neutral-500">
+                <span className="rounded-sm bg-neon-yellow/15 px-2.5 py-1 font-hud text-xs font-bold gold-text">
                   {new Date(t.startDate).toLocaleDateString("tr-TR")}
                 </span>
               </div>
