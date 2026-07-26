@@ -235,40 +235,63 @@ export default function EnlerPage() {
         Her harita icin ayin en cok kill alan oyuncusu, ve en iyi vurus anlari.
       </p>
 
-      {/* Sekmeler */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-        {MAPS.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => setSection(m.id)}
-            style={{
-              padding: "8px 18px",
-              borderRadius: 6,
-              border: "1px solid #444",
-              background: section === m.id ? "#22c55e" : "#1a1a1a",
-              color: section === m.id ? "#000" : "#fff",
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
-          >
-            {m.label}
-          </button>
-        ))}
+      {/* Ana kategoriler */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+        <button
+          onClick={() => setSection("erangel")}
+          style={{
+            padding: "10px 20px",
+            borderRadius: 8,
+            border: "1px solid #22c55e",
+            background: isMap ? "#22c55e" : "#1a1a1a",
+            color: isMap ? "#000" : "#22c55e",
+            fontWeight: 800,
+            fontSize: 15,
+            cursor: "pointer",
+          }}
+        >
+          🎯 En Fazla Kill
+        </button>
         <button
           onClick={() => setSection("en-iyi-vurus")}
           style={{
-            padding: "8px 18px",
-            borderRadius: 6,
+            padding: "10px 20px",
+            borderRadius: 8,
             border: "1px solid #eab308",
-            background: section === "en-iyi-vurus" ? "#eab308" : "#1a1a1a",
-            color: section === "en-iyi-vurus" ? "#000" : "#eab308",
-            fontWeight: 700,
+            background: !isMap ? "#eab308" : "#1a1a1a",
+            color: !isMap ? "#000" : "#eab308",
+            fontWeight: 800,
+            fontSize: 15,
             cursor: "pointer",
           }}
         >
           🎬 En Iyi Vurus
         </button>
       </div>
+
+      {/* Harita alt sekmeleri - sadece "En Fazla Kill" acikken gorunur */}
+      {isMap && (
+        <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap", paddingLeft: 4 }}>
+          {MAPS.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setSection(m.id)}
+              style={{
+                padding: "7px 16px",
+                borderRadius: 6,
+                border: "1px solid #333",
+                background: section === m.id ? "#16a34a" : "#111",
+                color: section === m.id ? "#fff" : "#aaa",
+                fontWeight: 600,
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {isMap ? (
         <>
