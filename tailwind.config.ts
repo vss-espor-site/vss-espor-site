@@ -10,29 +10,29 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#05070A",
-          soft: "#0B0F14",
-          card: "#0E1319",
-          border: "#1C2530",
+          DEFAULT: "#050608",
+          soft: "#0B1220",
+          card: "#0D1520",
+          border: "#1A2740",
         },
         neon: {
-          green: "#29D3FF",
-          greenDark: "#0EA5CE",
+          green: "#2D6BFF",
+          greenDark: "#1F4FD6",
           yellow: "#D4AF37",
-          orange: "#FF5A2E",
+          orange: "#F2D16B",
         },
       },
       boxShadow: {
-        neon: "0 0 12px rgba(41,211,255,0.55), 0 0 40px rgba(41,211,255,0.18)",
+        neon: "0 0 12px rgba(45,107,255,0.55), 0 0 40px rgba(45,107,255,0.2)",
         neonYellow: "0 0 12px rgba(212,175,55,0.55), 0 0 40px rgba(212,175,55,0.18)",
-        neonOrange: "0 0 10px rgba(255,90,46,0.5), 0 0 30px rgba(255,90,46,0.15)",
+        neonOrange: "0 0 12px rgba(242,209,107,0.5), 0 0 30px rgba(242,209,107,0.16)",
       },
       fontFamily: {
         display: ["Rajdhani", "Oswald", "sans-serif"],
         mono: ["Space Mono", "monospace"],
       },
       backgroundImage: {
-        grid: "linear-gradient(rgba(41,211,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(41,211,255,0.05) 1px, transparent 1px)",
+        grid: "linear-gradient(rgba(45,107,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(45,107,255,0.06) 1px, transparent 1px)",
       },
       backgroundSize: {
         grid: "40px 40px",

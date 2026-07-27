@@ -242,9 +242,9 @@ export default function EnlerPage() {
           style={{
             padding: "10px 20px",
             borderRadius: 8,
-            border: "1px solid #22c55e",
-            background: isMap ? "#22c55e" : "#1a1a1a",
-            color: isMap ? "#000" : "#22c55e",
+            border: "1px solid #2D6BFF",
+            background: isMap ? "#2D6BFF" : "#1a1a1a",
+            color: isMap ? "#000" : "#2D6BFF",
             fontWeight: 800,
             fontSize: 15,
             cursor: "pointer",
@@ -257,9 +257,9 @@ export default function EnlerPage() {
           style={{
             padding: "10px 20px",
             borderRadius: 8,
-            border: "1px solid #eab308",
-            background: !isMap ? "#eab308" : "#1a1a1a",
-            color: !isMap ? "#000" : "#eab308",
+            border: "1px solid #D4AF37",
+            background: !isMap ? "#D4AF37" : "#1a1a1a",
+            color: !isMap ? "#000" : "#D4AF37",
             fontWeight: 800,
             fontSize: 15,
             cursor: "pointer",
@@ -280,7 +280,7 @@ export default function EnlerPage() {
                 padding: "7px 16px",
                 borderRadius: 6,
                 border: "1px solid #333",
-                background: section === m.id ? "#16a34a" : "#111",
+                background: section === m.id ? "#1F4FD6" : "#111",
                 color: section === m.id ? "#fff" : "#aaa",
                 fontWeight: 600,
                 fontSize: 13,
@@ -325,16 +325,16 @@ export default function EnlerPage() {
                 textAlign: "center",
                 padding: "32px 16px",
                 borderRadius: 16,
-                border: "1px solid #22c55e",
+                border: "1px solid #2D6BFF",
                 background: "linear-gradient(180deg, rgba(34,197,94,0.12), rgba(0,0,0,0))",
                 marginBottom: 28,
               }}
             >
-              <div style={{ fontSize: 13, letterSpacing: 3, color: "#22c55e", fontWeight: 700, marginBottom: 10 }}>
+              <div style={{ fontSize: 13, letterSpacing: 3, color: "#2D6BFF", fontWeight: 700, marginBottom: 10 }}>
                 {MAPS.find((m) => m.id === activeMap)?.label.toUpperCase()} - {monthLabel(selectedMonth).toUpperCase()} SAMPIYONU
               </div>
               <div style={{ fontSize: 34, fontWeight: 900, marginBottom: 6 }}>{champion.pubgId}</div>
-              <div style={{ fontSize: 20, color: "#eab308", fontWeight: 700, marginBottom: 14 }}>
+              <div style={{ fontSize: 20, color: "#D4AF37", fontWeight: 700, marginBottom: 14 }}>
                 @{champion.instagram}
               </div>
               <div style={{ fontSize: 16, color: "#ccc", marginBottom: 16 }}>{champion.killCount} Kill</div>
@@ -395,7 +395,7 @@ export default function EnlerPage() {
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
                 style={{ color: "#ccc" }}
               />
-              {formMsg && <p style={{ color: formMsg.includes("basariyla") ? "#22c55e" : "#f87171" }}>{formMsg}</p>}
+              {formMsg && <p style={{ color: formMsg.includes("basariyla") ? "#2D6BFF" : "#F2D16B" }}>{formMsg}</p>}
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
@@ -403,7 +403,7 @@ export default function EnlerPage() {
                   padding: "10px 16px",
                   borderRadius: 8,
                   border: "none",
-                  background: "#22c55e",
+                  background: "#2D6BFF",
                   color: "#000",
                   fontWeight: 700,
                   cursor: submitting ? "default" : "pointer",
@@ -424,12 +424,12 @@ export default function EnlerPage() {
                 style={{
                   padding: 16,
                   borderRadius: 10,
-                  border: "1px solid #eab308",
+                  border: "1px solid #D4AF37",
                   marginBottom: 20,
                   textAlign: "center",
                 }}
               >
-                <p style={{ color: "#eab308", marginBottom: 10 }}>Video yuklemek icin giris yapmalisin.</p>
+                <p style={{ color: "#D4AF37", marginBottom: 10 }}>Video yuklemek icin giris yapmalisin.</p>
                 <button
                   onClick={() => signIn("google")}
                   style={{
@@ -467,11 +467,11 @@ export default function EnlerPage() {
                   />
                   {videoUploading && (
                     <div style={{ height: 6, borderRadius: 3, background: "#222", overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: `${videoProgress}%`, background: "#eab308", transition: "width 0.2s" }} />
+                      <div style={{ height: "100%", width: `${videoProgress}%`, background: "#D4AF37", transition: "width 0.2s" }} />
                     </div>
                   )}
                   {videoMsg && (
-                    <p style={{ color: videoMsg.includes("basariyla") ? "#22c55e" : "#f87171" }}>{videoMsg}</p>
+                    <p style={{ color: videoMsg.includes("basariyla") ? "#2D6BFF" : "#F2D16B" }}>{videoMsg}</p>
                   )}
                   <button
                     onClick={handleVideoUpload}
@@ -480,7 +480,7 @@ export default function EnlerPage() {
                       padding: "10px 16px",
                       borderRadius: 8,
                       border: "none",
-                      background: "#eab308",
+                      background: "#D4AF37",
                       color: "#000",
                       fontWeight: 700,
                       cursor: videoUploading ? "default" : "pointer",

@@ -12,6 +12,7 @@ const links = [
   { href: "/harita", label: "Haritalar" },
   { href: "/soru-cevap", label: "Soru Cevap" },
   { href: "/enler", label: "Enler" },
+  { href: "/cark", label: "Altın Çark" },
   { href: "/sohbet", label: "Sohbet" },
   { href: "/announcements", label: "Duyurular" },
 ];

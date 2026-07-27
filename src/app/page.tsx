@@ -86,6 +86,8 @@ export default async function HomePage() {
       </section>
 
       {/* STATS */}
+      <a href="/cark" className="block rounded-xl border border-[#D4AF37]/60 bg-gradient-to-r from-[#0B1220] via-[#101B33] to-[#0B1220] p-6 text-center shadow-[0_0_35px_rgba(212,175,55,0.25)] transition hover:shadow-[0_0_55px_rgba(212,175,55,0.5)]"><p className="text-2xl font-extrabold text-[#F2D16B]">🎡 VSS ALTIN ÇARK</p><p className="mt-2 text-sm text-[#8FA3C8]">Günde 3 çevirme hakkı — 60 UC kazanma şansı seni bekliyor!</p><p className="mt-3 inline-block rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#F2D16B] px-6 py-2 font-bold text-[#050608]">Hemen Çevir</p></a>
+
       <section className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <StatCard label="Kayıtlı Oyuncu" value={playerCount} />
         <StatCard label="Aktif / Yaklaşan Turnuva" value={activeTournaments.length} />

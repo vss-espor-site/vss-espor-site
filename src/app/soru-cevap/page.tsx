@@ -187,7 +187,7 @@ export default function SoruCevapPage() {
             marginBottom: 12,
           }}
         />
-        {loginError && <p style={{ color: "#f87171", marginBottom: 12 }}>{loginError}</p>}
+        {loginError && <p style={{ color: "#F2D16B", marginBottom: 12 }}>{loginError}</p>}
         <button
           onClick={handleLogin}
           style={{
@@ -195,7 +195,7 @@ export default function SoruCevapPage() {
             padding: "10px 14px",
             borderRadius: 8,
             border: "none",
-            background: "#22c55e",
+            background: "#2D6BFF",
             color: "#000",
             fontWeight: 700,
             cursor: "pointer",
@@ -231,7 +231,7 @@ export default function SoruCevapPage() {
             style={{
               height: "100%",
               width: `${(timeLeft / TIME_PER_QUESTION) * 100}%`,
-              background: timeLeft <= 2 ? "#ef4444" : "#22c55e",
+              background: timeLeft <= 2 ? "#F2D16B" : "#2D6BFF",
               transition: "width 1s linear",
             }}
           />
@@ -246,8 +246,8 @@ export default function SoruCevapPage() {
           {current.options.map((opt) => {
             let bg = "#1a1a1a";
             if (selected) {
-              if (opt.key === current.correct) bg = "#16a34a";
-              else if (opt.key === selected) bg = "#dc2626";
+              if (opt.key === current.correct) bg = "#1F4FD6";
+              else if (opt.key === selected) bg = "#F2D16B";
             }
             return (
               <button
@@ -286,7 +286,7 @@ export default function SoruCevapPage() {
           padding: "10px 16px",
           borderRadius: 8,
           border: "none",
-          background: "#22c55e",
+          background: "#2D6BFF",
           color: "#000",
           fontWeight: 700,
           cursor: "pointer",

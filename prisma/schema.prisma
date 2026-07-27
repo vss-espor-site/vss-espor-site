@@ -117,3 +117,11 @@ model BestPlay {
 
   @@index([createdAt])
 }
+
+model WheelSpin {
+  id        String   @id @default(cuid())
+  email     String
+  prize     String
+  wonUc     Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
