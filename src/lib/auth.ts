@@ -27,34 +27,16 @@ export const authOptions: NextAuthOptions = {
         const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
         const adminHash = process.env.ADMIN_PASSWORD_HASH;
 
-        // ---- GECICI DEBUG LOGLARI (sorun cozulunce silinecek) ----
-        console.log("[ADMIN-DEBUG] authorize cagrildi");
-        console.log("[ADMIN-DEBUG] env email var mi:", !!adminEmail, "| uzunluk:", adminEmail?.length);
-        console.log("[ADMIN-DEBUG] env hash var mi:", !!adminHash, "| uzunluk:", adminHash?.length, "| ilk 7 karakter:", adminHash?.slice(0, 7));
-        console.log("[ADMIN-DEBUG] girilen email uzunluk:", credentials?.email?.length, "| sifre uzunluk:", credentials?.password?.length);
-        // ----------------------------------------------------------
-
-        if (!credentials?.email || !credentials?.password) {
-          console.log("[ADMIN-DEBUG] SONUC: email veya sifre bos geldi");
-          return null;
-        }
-        if (!adminEmail || !adminHash) {
-          console.log("[ADMIN-DEBUG] SONUC: env degiskenleri eksik/bos");
-          return null;
-        }
+        if (!credentials?.email || !credentials?.password) return null;
+        if (!adminEmail || !adminHash) return null;
 
         if (credentials.email.toLowerCase().trim() !== adminEmail) {
-          console.log("[ADMIN-DEBUG] SONUC: email eslesmedi. Girilen(normalize):", credentials.email.toLowerCase().trim(), "| Beklenen uzunluk:", adminEmail.length, "Girilen uzunluk:", credentials.email.toLowerCase().trim().length);
           return null;
         }
 
         const valid = await bcrypt.compare(credentials.password, adminHash);
-        if (!valid) {
-          console.log("[ADMIN-DEBUG] SONUC: bcrypt eslesmedi (email dogruydu)");
-          return null;
-        }
+        if (!valid) return null;
 
-        console.log("[ADMIN-DEBUG] SONUC: GIRIS BASARILI");
         return { id: "admin", email: adminEmail, name: "Admin" };
       },
     }),
