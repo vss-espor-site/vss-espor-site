@@ -24,6 +24,27 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-20">
+      {/* YAYIN SAATLERI BANDI */}
+      <section className="flex flex-col items-center justify-between gap-4 rounded-xl border border-[#D4AF37]/60 bg-gradient-to-r from-[#0B1220] via-[#101B33] to-[#0B1220] px-6 py-4 shadow-[0_0_30px_rgba(212,175,55,0.25)] sm:flex-row">
+        <div className="flex items-center gap-3">
+          <span className="relative flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
+          </span>
+          <span className="font-hud text-sm font-bold uppercase tracking-[0.3em] text-[#F2D16B]">
+            Yayın Saatleri
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <span className="rounded-md border border-[#2D6BFF]/60 bg-[#0B1220] px-5 py-2 font-hud text-sm font-bold tracking-wider text-neutral-100 shadow-[0_0_15px_rgba(45,107,255,0.25)]">
+            🌅 Sabah 09.00 – 11.00
+          </span>
+          <span className="rounded-md border border-[#D4AF37]/60 bg-[#0B1220] px-5 py-2 font-hud text-sm font-bold tracking-wider text-neutral-100 shadow-[0_0_15px_rgba(212,175,55,0.25)]">
+            🌙 Akşam 20.00 – 22.00
+          </span>
+        </div>
+      </section>
+
       {/* HERO */}
       <section className="relative overflow-hidden px-6 py-16 text-center">
         <p className="mb-4 font-hud text-[11px] uppercase tracking-[0.35em] text-neon-orange">
@@ -99,7 +120,7 @@ export default async function HomePage() {
         <section className="hud-panel p-6">
           <p className="hud-label mb-2 text-neon-orange">Son Duyuru</p>
           <h3 className="font-display text-xl font-bold">{latestAnnouncement.title}</h3>
-          <p className="mt-2 text-neutral-400">{latestAnnouncement.content}</p>
+          <p className="mt-2 whitespace-pre-line text-neutral-400">{latestAnnouncement.content}</p>
           <Link href="/announcements" className="mt-3 inline-block font-hud text-xs uppercase tracking-wider text-neon-green hover:underline">
             Tüm duyuruları gör &rarr;
           </Link>
