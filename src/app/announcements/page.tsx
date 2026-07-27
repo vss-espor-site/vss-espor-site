@@ -29,7 +29,7 @@ export default async function AnnouncementsPage() {
                 <h3 className="font-display text-lg font-bold">{a.title}</h3>
                 {a.pinned && <span className="text-xs text-neon-yellow">📌 SABIT</span>}
               </div>
-              <p className="mt-2 text-sm text-neutral-400">{a.content}</p>
+              <p className="mt-2 whitespace-pre-line text-sm text-neutral-400">{a.content}</p>
               <p className="mt-3 text-xs text-neutral-600">
                 {new Date(a.createdAt).toLocaleString("tr-TR")}
               </p>
